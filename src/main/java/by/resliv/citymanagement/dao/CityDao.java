@@ -16,15 +16,35 @@ public class CityDao implements CityDaoInterface {
     private static final String NAME;
     private static final String ID;
     private static final String INFORMATION;
+    private static final String INSERT_QUERY;
 
     static {
         NAME = "name";
         ID = "id";
         INFORMATION = "information";
+        INSERT_QUERY = "INSERT INTO city (name, information) VALUES (?, ?)";
     }
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED,
+            rollbackFor = DaoException.class)
+    @Modifying
+    public City create(City city) throws DaoException {
+        City result;
+        try {
+            entityManager.createNativeQuery(INSERT_QUERY).
+                    setParameter(1, city.getName()).
+                    setParameter(2, city.getInformation()).
+                    executeUpdate();
+            result = read(NAME, city.getName());
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
+        return result;
+    }
 
     @Override
     public City read(String name) throws DaoException {

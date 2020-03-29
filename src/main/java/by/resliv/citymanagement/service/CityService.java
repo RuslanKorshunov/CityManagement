@@ -24,6 +24,18 @@ public class CityService implements CityServiceInterface {
     private CityDaoInterface dao;
 
     @Override
+    public City create(City city) throws ServiceException {
+        City result;
+        try {
+            City copy = validate(city);
+            result = dao.create(copy);
+        } catch (DaoException | CloneNotSupportedException e) {
+            throw new ServiceException(e);
+        }
+        return result;
+    }
+
+    @Override
     public City read(String value) throws ServiceException {
         value = value.trim();
         City city;
@@ -45,19 +57,9 @@ public class CityService implements CityServiceInterface {
 
     @Override
     public City update(City city) throws ServiceException {
-        String name = city.getName().trim();
-        String information = city.getInformation().trim();
-        if (!nameValidator.validate(name)) {
-            throw new ServiceException("name " + name + " has invalid value.");
-        }
-        if (!informationValidator.validate(information)) {
-            throw new ServiceException("information " + information.substring(1, 20) + " has invalid value.");
-        }
         City result;
         try {
-            City copy = city.clone();
-            copy.setName(name);
-            copy.setInformation(information);
+            City copy = validate(city);
             result = dao.update(copy);
         } catch (DaoException | CloneNotSupportedException e) {
             throw new ServiceException(e);
@@ -74,5 +76,20 @@ public class CityService implements CityServiceInterface {
             throw new ServiceException(e);
         }
         return city;
+    }
+
+    private City validate(City city) throws ServiceException, CloneNotSupportedException {
+        String name = city.getName().trim();
+        if (!nameValidator.validate(name)) {
+            throw new ServiceException("name " + name + " has invalid value.");
+        }
+        String information = city.getInformation().trim();
+        if (!informationValidator.validate(information)) {
+            throw new ServiceException("information " + information.substring(1, 20) + " has invalid value.");
+        }
+        City result = city.clone();
+        result.setName(name);
+        result.setInformation(information);
+        return result;
     }
 }

@@ -23,6 +23,23 @@ public class CityController implements CityControllerInterface {
     private CityServiceInterface service;
 
     @Override
+    @PostMapping(value = "/",
+            produces = PRODUCES,
+            consumes = CONSUMES)
+    public ResponseEntity<City> create(@RequestBody City city) {
+        HttpStatus status = HttpStatus.CREATED;
+        City result;
+        try {
+            result = service.create(city);
+        } catch (ServiceException e) {
+            logger.error(e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            result = new City();
+        }
+        return new ResponseEntity<>(result, status);
+    }
+
+    @Override
     @GetMapping(value = "/{value}",
             produces = PRODUCES,
             consumes = CONSUMES)
