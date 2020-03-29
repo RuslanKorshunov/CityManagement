@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/city")
-public class CityController implements Controller<City> {
+public class CityController implements CityControllerInterface {
     private static final Logger logger;
 
     static {
@@ -26,14 +26,14 @@ public class CityController implements Controller<City> {
     private CityServiceInterface service;
 
     @Override
-    @GetMapping(value = "/{name}",
+    @GetMapping(value = "/{value}",
             produces = PRODUCES,
             consumes = CONSUMES)
-    public ResponseEntity<City> read(@PathVariable("name") String name) {
+    public ResponseEntity<City> read(@PathVariable("value") String value) {
         HttpStatus status = HttpStatus.OK;
         City city;
         try {
-            city = service.read(name);
+            city = service.read(value);
         } catch (ServiceException e) {
             logger.error(e);
             status = HttpStatus.BAD_REQUEST;

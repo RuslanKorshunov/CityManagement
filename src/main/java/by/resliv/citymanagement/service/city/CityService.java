@@ -13,19 +13,27 @@ import org.springframework.stereotype.Service;
 public class CityService implements CityServiceInterface {
     @Autowired
     @Qualifier("nameValidator")
-    private Validator validator;
+    private Validator nameValidator;
+    @Autowired
+    @Qualifier("numberValidator")
+    private Validator numberValidator;
     @Autowired
     private CityDaoInterface dao;
 
     @Override
-    public City read(String name) throws ServiceException {
-        name = name.trim();
-        if (!validator.validate(name)) {
-            throw new ServiceException("name " + name + " has invalid value.");
-        }
+    public City read(String value) throws ServiceException {
+        value = value.trim();
         City city;
         try {
-            city = dao.readByName(name);
+            if (numberValidator.validate(value)) {
+                long id = Long.valueOf(value);
+                city = dao.read(id);
+            } else {
+                if (!nameValidator.validate(value)) {
+                    throw new ServiceException("value " + value + " has invalid value.");
+                }
+                city = dao.read(value);
+            }
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
