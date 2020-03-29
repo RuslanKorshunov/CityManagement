@@ -39,4 +39,15 @@ public class CityService implements CityServiceInterface {
         }
         return city;
     }
+
+    @Override
+    public City delete(long id) throws ServiceException {
+        City city;
+        try {
+            city = dao.delete(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+        return city;
+    }
 }
