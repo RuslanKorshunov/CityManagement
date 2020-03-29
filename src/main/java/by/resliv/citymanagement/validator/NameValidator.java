@@ -3,15 +3,15 @@ package by.resliv.citymanagement.validator;
 import org.springframework.stereotype.Component;
 
 @Component("nameValidator")
-public class NameValidator implements Validator {
+public class NameValidator extends Validator {
     private static final String NAME_REGEX;
 
     static {
-        NAME_REGEX = "^\\p{IsCyrillic}+[\\-\\p{IsCyrillic}+]*$";
+        NAME_REGEX = "^\\p{IsCyrillic}[\\p{IsCyrillic}-]{1,18}\\p{IsCyrillic}$";
     }
 
     @Override
-    public boolean validate(String value) {
-        return value.matches(NAME_REGEX);
+    String getRegex() {
+        return NAME_REGEX;
     }
 }

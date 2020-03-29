@@ -1,5 +1,10 @@
 package by.resliv.citymanagement.validator;
 
-public interface Validator {
-    boolean validate(String value);
+public abstract class Validator {
+    public final boolean validate(String value) {
+        return value.matches(getRegex()) &&
+                value != null;
+    }
+
+    abstract String getRegex();
 }

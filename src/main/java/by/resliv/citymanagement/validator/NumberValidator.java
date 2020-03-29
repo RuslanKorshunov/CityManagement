@@ -3,7 +3,7 @@ package by.resliv.citymanagement.validator;
 import org.springframework.stereotype.Component;
 
 @Component("numberValidator")
-public class NumberValidator implements Validator {
+public class NumberValidator extends Validator {
     private static final String NUMBER_REGEX;
 
     static {
@@ -11,7 +11,7 @@ public class NumberValidator implements Validator {
     }
 
     @Override
-    public boolean validate(String value) {
-        return value.matches(NUMBER_REGEX);
+    String getRegex() {
+        return NUMBER_REGEX;
     }
 }

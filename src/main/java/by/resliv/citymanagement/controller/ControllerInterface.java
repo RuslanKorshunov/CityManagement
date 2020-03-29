@@ -6,5 +6,7 @@ public interface ControllerInterface<T> {
     String PRODUCES = "application/json";
     String CONSUMES = PRODUCES;
 
+    ResponseEntity<T> update(T t, long id);
+
     ResponseEntity<T> delete(long id);
 }

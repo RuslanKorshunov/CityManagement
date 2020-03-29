@@ -1,4 +1,4 @@
-package by.resliv.citymanagement.service.city;
+package by.resliv.citymanagement.service;
 
 import by.resliv.citymanagement.dao.CityDaoInterface;
 import by.resliv.citymanagement.entity.City;
@@ -17,6 +17,9 @@ public class CityService implements CityServiceInterface {
     @Autowired
     @Qualifier("numberValidator")
     private Validator numberValidator;
+    @Autowired
+    @Qualifier("informationValidator")
+    private Validator informationValidator;
     @Autowired
     private CityDaoInterface dao;
 
@@ -38,6 +41,28 @@ public class CityService implements CityServiceInterface {
             throw new ServiceException(e);
         }
         return city;
+    }
+
+    @Override
+    public City update(City city) throws ServiceException {
+        String name = city.getName().trim();
+        String information = city.getInformation().trim();
+        if (!nameValidator.validate(name)) {
+            throw new ServiceException("name " + name + " has invalid value.");
+        }
+        if (!informationValidator.validate(information)) {
+            throw new ServiceException("information " + information.substring(1, 20) + " has invalid value.");
+        }
+        City result;
+        try {
+            City copy = city.clone();
+            copy.setName(name);
+            copy.setInformation(information);
+            result = dao.update(copy);
+        } catch (DaoException | CloneNotSupportedException e) {
+            throw new ServiceException(e);
+        }
+        return result;
     }
 
     @Override

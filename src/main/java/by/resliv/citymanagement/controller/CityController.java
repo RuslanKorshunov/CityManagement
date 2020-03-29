@@ -2,7 +2,7 @@ package by.resliv.citymanagement.controller;
 
 import by.resliv.citymanagement.entity.City;
 import by.resliv.citymanagement.exception.ServiceException;
-import by.resliv.citymanagement.service.city.CityServiceInterface;
+import by.resliv.citymanagement.service.CityServiceInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,24 @@ public class CityController implements CityControllerInterface {
             city = new City();
         }
         return new ResponseEntity<>(city, status);
+    }
+
+    @Override
+    @PutMapping(value = "/{id}",
+            produces = PRODUCES,
+            consumes = CONSUMES)
+    public ResponseEntity<City> update(@RequestBody City city, @PathVariable("id") long id) {
+        HttpStatus status = HttpStatus.OK;
+        City result;
+        try {
+            city.setId(id);
+            result = service.update(city);
+        } catch (ServiceException e) {
+            logger.error(e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            result = city;
+        }
+        return new ResponseEntity<>(result, status);
     }
 
     @Override

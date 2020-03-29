@@ -1,7 +1,9 @@
-package by.resliv.citymanagement.service.city;
+package by.resliv.citymanagement.service;
 
 import by.resliv.citymanagement.exception.ServiceException;
 
 public interface ServiceInterface<T> {
+    T update(T t) throws ServiceException;
+
     T delete(long id) throws ServiceException;
 }

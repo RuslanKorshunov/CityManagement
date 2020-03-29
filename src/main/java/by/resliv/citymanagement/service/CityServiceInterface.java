@@ -1,4 +1,4 @@
-package by.resliv.citymanagement.service.city;
+package by.resliv.citymanagement.service;
 
 import by.resliv.citymanagement.entity.City;
 import by.resliv.citymanagement.exception.ServiceException;

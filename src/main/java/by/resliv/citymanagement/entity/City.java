@@ -4,17 +4,21 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "city")
-public class City {
+public class City implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @Column(name = "name")
     private String name;
-    @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "city_id")
-    private Fact fact;
+    @Column(name = "information")
+    private String information;
 
     public City() {
+    }
+
+    @Override
+    public City clone() throws CloneNotSupportedException {
+        return (City) super.clone();
     }
 
     public long getId() {
@@ -33,11 +37,11 @@ public class City {
         this.name = name;
     }
 
-    public Fact getFact() {
-        return fact;
+    public String getInformation() {
+        return information;
     }
 
-    public void setFact(Fact fact) {
-        this.fact = fact;
+    public void setInformation(String information) {
+        this.information = information;
     }
 }
