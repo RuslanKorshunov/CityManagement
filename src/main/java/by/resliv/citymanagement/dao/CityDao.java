@@ -22,7 +22,7 @@ public class CityDao implements CityDaoInterface {
     private EntityManager entityManager;
 
     @Override
-    public City read(String name) throws DaoException {
+    public City readByName(String name) throws DaoException {
         City city;
         try {
             CriteriaBuilder builder = entityManager.getCriteriaBuilder();

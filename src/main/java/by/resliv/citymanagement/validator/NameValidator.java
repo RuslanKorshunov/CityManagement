@@ -7,7 +7,7 @@ public class NameValidator implements Validator {
     private static final String NAME_REGEX;
 
     static {
-        NAME_REGEX = "^\\w+[\\-\\w+]*$";
+        NAME_REGEX = "^\\p{IsCyrillic}+[\\-\\p{IsCyrillic}+]*$";
     }
 
     @Override

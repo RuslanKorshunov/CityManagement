@@ -26,7 +26,7 @@ public class CityController implements Controller<City> {
     private CityServiceInterface service;
 
     @Override
-    @GetMapping(value = "/{$name}",
+    @GetMapping(value = "/{name}",
             produces = PRODUCES,
             consumes = CONSUMES)
     public ResponseEntity<City> read(@PathVariable("name") String name) {

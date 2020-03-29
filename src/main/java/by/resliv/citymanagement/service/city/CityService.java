@@ -25,7 +25,7 @@ public class CityService implements CityServiceInterface {
         }
         City city;
         try {
-            city = dao.read(name);
+            city = dao.readByName(name);
         } catch (DaoException e) {
             throw new ServiceException(e);
         }

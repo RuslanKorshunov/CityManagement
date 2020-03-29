@@ -10,8 +10,6 @@ public class Fact {
     private long id;
     @Column(name = "content")
     private String content;
-    @OneToOne(mappedBy = "fact")
-    private City city;
 
     public Fact() {
     }
@@ -30,13 +28,5 @@ public class Fact {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
     }
 }
