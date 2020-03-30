@@ -1,5 +1,6 @@
 package by.resliv.citymanagement.main;
 
+import by.resliv.citymanagement.bot.CityGuideBot;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,9 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.telegram.telegrambots.ApiContextInitializer;
+import org.telegram.telegrambots.TelegramBotsApi;
+import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -38,6 +42,8 @@ public class Main {
     private static final String HDM2DDL_AUTO;
     private static final String SHOW_SQL;
     private static final String DIALECT;
+    private static final String TELEGRAM_NAME;
+    private static final String TELEGRAM_TOKEN;
     private static final String ENTITY_PACKAGE;
 
     static {
@@ -48,6 +54,8 @@ public class Main {
         HDM2DDL_AUTO = "hibernate.hbm2ddl.auto";
         SHOW_SQL = "hibernate.show_sql";
         DIALECT = "hibernate.dialect";
+        TELEGRAM_NAME = "telegram.name";
+        TELEGRAM_TOKEN = "telegram.token";
         ENTITY_PACKAGE = "by.resliv.citymanagement.entity";
     }
 
@@ -55,6 +63,7 @@ public class Main {
     private Environment environment;
 
     public static void main(String[] args) {
+        ApiContextInitializer.init();
         SpringApplication.run(Main.class, args);
     }
 
@@ -101,6 +110,20 @@ public class Main {
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean
+    public TelegramBotsApi getTelegramBotsApi() {
+        return new TelegramBotsApi();
+    }
+
+    @Bean
+    public CityGuideBot getCityGuideBot(TelegramBotsApi api) throws TelegramApiRequestException {
+        String name = environment.getProperty(TELEGRAM_NAME);
+        String token = environment.getProperty(TELEGRAM_TOKEN);
+        CityGuideBot bot = new CityGuideBot(name, token);
+        api.registerBot(bot);
+        return bot;
     }
 
     private Properties getProperties() {
