@@ -1,6 +1,6 @@
 package by.resliv.citymanagement.service;
 
-import by.resliv.citymanagement.dao.CityDaoInterface;
+import by.resliv.citymanagement.dao.DaoInterface;
 import by.resliv.citymanagement.entity.City;
 import by.resliv.citymanagement.exception.DaoException;
 import by.resliv.citymanagement.exception.ServiceException;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CityService implements CityServiceInterface {
+public class CityService implements ServiceInterface<City> {
     @Autowired
     @Qualifier("nameValidator")
     private Validator nameValidator;
@@ -21,7 +21,7 @@ public class CityService implements CityServiceInterface {
     @Qualifier("informationValidator")
     private Validator informationValidator;
     @Autowired
-    private CityDaoInterface dao;
+    private DaoInterface<City> dao;
 
     @Override
     public City create(City city) throws ServiceException {

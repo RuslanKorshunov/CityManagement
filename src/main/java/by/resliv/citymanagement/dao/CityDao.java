@@ -9,20 +9,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import javax.persistence.Query;
 
 @Repository
-public class CityDao implements CityDaoInterface {
+public class CityDao implements DaoInterface<City> {
     private static final String NAME;
     private static final String ID;
     private static final String INFORMATION;
     private static final String INSERT_QUERY;
+    private static final String SELECT_QUERY_BY_NAME;
+    private static final String SELECT_QUERY_BY_ID;
+    private static final String UPDATE_QUERY;
+    private static final String DELETE_QUERY;
 
     static {
         NAME = "name";
         ID = "id";
         INFORMATION = "information";
-        INSERT_QUERY = "INSERT INTO city (name, information) VALUES (?, ?)";
+        INSERT_QUERY = "INSERT INTO City (name, information) VALUES (:name, :information)";
+        SELECT_QUERY_BY_NAME = "SELECT c FROM City c WHERE c.name=:name";
+        SELECT_QUERY_BY_ID = "SELECT c FROM City c WHERE c.id=:id";
+        UPDATE_QUERY = "UPDATE City SET name=:name, information=:information WHERE id=:id";
+        DELETE_QUERY = "DELETE FROM City c WHERE c.id=:id";
     }
 
     @PersistenceContext
@@ -36,10 +44,10 @@ public class CityDao implements CityDaoInterface {
         City result;
         try {
             entityManager.createNativeQuery(INSERT_QUERY).
-                    setParameter(1, city.getName()).
-                    setParameter(2, city.getInformation()).
+                    setParameter(NAME, city.getName()).
+                    setParameter(INFORMATION, city.getInformation()).
                     executeUpdate();
-            result = read(NAME, city.getName());
+            result = read(SELECT_QUERY_BY_NAME, NAME, city.getName());
         } catch (Exception e) {
             throw new DaoException(e);
         }
@@ -48,12 +56,12 @@ public class CityDao implements CityDaoInterface {
 
     @Override
     public City read(String name) throws DaoException {
-        return read(NAME, name);
+        return read(SELECT_QUERY_BY_NAME, NAME, name);
     }
 
     @Override
     public City read(long id) throws DaoException {
-        return read(ID, id);
+        return read(SELECT_QUERY_BY_ID, ID, id);
     }
 
     @Override
@@ -61,17 +69,14 @@ public class CityDao implements CityDaoInterface {
             rollbackFor = DaoException.class)
     @Modifying
     public City update(City city) throws DaoException {
+        City result;
         try {
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaUpdate<City> update = builder.createCriteriaUpdate(City.class);
-            Root<City> root = update.from(City.class);
-            update.set(NAME, city.getName());
-            update.set(INFORMATION, city.getInformation());
-            update.where(builder.equal(root.get(ID), city.getId()));
-            int result = entityManager.createQuery(update).executeUpdate();
-            if (result == 0) {
-                throw new DaoException("city " + city.getName() + " wasn't updated.");
-            }
+            entityManager.createNativeQuery(UPDATE_QUERY).
+                    setParameter(NAME, city.getName()).
+                    setParameter(INFORMATION, city.getInformation()).
+                    setParameter(ID, city.getId()).
+                    executeUpdate();
+            city = read(SELECT_QUERY_BY_ID, ID, city.getId());
         } catch (Exception e) {
             throw new DaoException(e);
         }
@@ -83,31 +88,24 @@ public class CityDao implements CityDaoInterface {
             rollbackFor = DaoException.class)
     @Modifying
     public City delete(long id) throws DaoException {
-        City city = read(ID, id);
+        City city = read(SELECT_QUERY_BY_ID, ID, id);
         try {
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaDelete<City> delete = builder.createCriteriaDelete(City.class);
-            Root<City> root = delete.from(City.class);
-            delete.where(builder.equal(root.get(ID), id));
-            int result = entityManager.createQuery(delete).executeUpdate();
-            if (result == 0) {
-                throw new DaoException("city " + city.getName() + " wasn't deleted.");
-            }
+            entityManager.createNativeQuery(DELETE_QUERY).
+                    setParameter(ID, id).
+                    executeUpdate();
         } catch (Exception e) {
             throw new DaoException(e);
         }
         return city;
     }
 
-    private City read(String parameter, Object value) throws DaoException {
+    private City read(String query, String parameter, Object value) throws DaoException {
         City city;
         try {
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<City> query = builder.createQuery(City.class);
-            Root<City> root = query.from(City.class);
-            query.select(root);
-            query.where(builder.equal(root.get(parameter), value));
-            city = entityManager.createQuery(query).getSingleResult();
+            Query q = entityManager.
+                    createQuery(query).
+                    setParameter(parameter, value);
+            city = (City) q.getSingleResult();
         } catch (Exception e) {
             throw new DaoException(e);
         }

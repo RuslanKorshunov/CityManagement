@@ -5,6 +5,8 @@ import by.resliv.citymanagement.exception.ServiceException;
 public interface ServiceInterface<T> {
     T create(T t) throws ServiceException;
 
+    T read(String name) throws ServiceException;
+
     T update(T t) throws ServiceException;
 
     T delete(long id) throws ServiceException;

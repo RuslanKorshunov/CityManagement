@@ -1,4 +1,6 @@
 # CityManagement
+В качестве СУБД использовался postgresql. Данные для БД хранятся в файле backup в resources.
+
 ****Telegram****
-* name: CityGuideBot
-* token: 1001912171:AAG5_6oSa6YQiYxW6e_HShfu-zkvd46c1HU
+* имя: CityGuideBot
+* токен: 1001912171:AAFM57jVLAvFF6BpzUBbS3DX4yYcBQ4gWqE

@@ -2,7 +2,7 @@ package by.resliv.citymanagement.bot;
 
 import by.resliv.citymanagement.entity.City;
 import by.resliv.citymanagement.exception.ServiceException;
-import by.resliv.citymanagement.service.CityServiceInterface;
+import by.resliv.citymanagement.service.ServiceInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class CityGuideBot extends TelegramLongPollingBot {
     private static final String START;
 
     @Autowired
-    private CityServiceInterface service;
+    private ServiceInterface<City> service;
 
     private String name;
     private String token;

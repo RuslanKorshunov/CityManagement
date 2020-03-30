@@ -2,7 +2,7 @@ package by.resliv.citymanagement.controller;
 
 import by.resliv.citymanagement.entity.City;
 import by.resliv.citymanagement.exception.ServiceException;
-import by.resliv.citymanagement.service.CityServiceInterface;
+import by.resliv.citymanagement.service.ServiceInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/city")
-public class CityController implements CityControllerInterface {
+public class CityController implements ControllerInterface<City> {
     private static final Logger logger;
 
     static {
@@ -20,7 +20,7 @@ public class CityController implements CityControllerInterface {
     }
 
     @Autowired
-    private CityServiceInterface service;
+    private ServiceInterface<City> service;
 
     @Override
     @PostMapping(value = "/",
@@ -50,7 +50,7 @@ public class CityController implements CityControllerInterface {
             city = service.read(value);
         } catch (ServiceException e) {
             logger.error(e);
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
             city = new City();
         }
         return new ResponseEntity<>(city, status);
@@ -85,7 +85,7 @@ public class CityController implements CityControllerInterface {
             city = service.delete(id);
         } catch (ServiceException e) {
             logger.error(e);
-            status = HttpStatus.NOT_FOUND;
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
             city = new City();
         }
         return new ResponseEntity<>(city, status);
