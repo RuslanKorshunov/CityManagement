@@ -40,14 +40,14 @@ public class CityController implements ControllerInterface<City> {
     }
 
     @Override
-    @GetMapping(value = "/{value}",
+    @GetMapping(value = "/{id}",
             produces = PRODUCES,
             consumes = CONSUMES)
-    public ResponseEntity<City> read(@PathVariable("value") String value) {
+    public ResponseEntity<City> read(@PathVariable("id") long id) {
         HttpStatus status = HttpStatus.OK;
         City city;
         try {
-            city = service.read(value);
+            city = service.read(String.valueOf(id));
         } catch (ServiceException e) {
             logger.error(e);
             status = HttpStatus.INTERNAL_SERVER_ERROR;

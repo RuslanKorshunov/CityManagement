@@ -35,6 +35,7 @@ public class CityGuideBot extends TelegramLongPollingBot {
         this.token = token;
     }
 
+    @Override
     public void onUpdateReceived(Update update) {
         String name = update.getMessage().getText();
         String message;
@@ -52,10 +53,12 @@ public class CityGuideBot extends TelegramLongPollingBot {
         sendMsg(update.getMessage().getChatId().toString(), message);
     }
 
+    @Override
     public String getBotUsername() {
         return name;
     }
 
+    @Override
     public String getBotToken() {
         return token;
     }

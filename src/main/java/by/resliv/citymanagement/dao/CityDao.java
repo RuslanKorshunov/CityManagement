@@ -12,6 +12,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 @Repository
+@Transactional(isolation = Isolation.READ_COMMITTED,
+        rollbackFor = DaoException.class)
 public class CityDao implements DaoInterface<City> {
     private static final String NAME;
     private static final String ID;
@@ -37,8 +39,6 @@ public class CityDao implements DaoInterface<City> {
     private EntityManager entityManager;
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED,
-            rollbackFor = DaoException.class)
     @Modifying
     public City create(City city) throws DaoException {
         City result;
@@ -65,8 +65,6 @@ public class CityDao implements DaoInterface<City> {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED,
-            rollbackFor = DaoException.class)
     @Modifying
     public City update(City city) throws DaoException {
         City result;
@@ -84,8 +82,6 @@ public class CityDao implements DaoInterface<City> {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED,
-            rollbackFor = DaoException.class)
     @Modifying
     public City delete(long id) throws DaoException {
         City city = read(SELECT_QUERY_BY_ID, ID, id);

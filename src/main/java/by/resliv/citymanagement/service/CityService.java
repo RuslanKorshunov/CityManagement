@@ -29,7 +29,7 @@ public class CityService implements ServiceInterface<City> {
         try {
             City copy = validate(city);
             result = dao.create(copy);
-        } catch (DaoException | CloneNotSupportedException e) {
+        } catch (DaoException e) {
             throw new ServiceException(e);
         }
         return result;
@@ -47,6 +47,7 @@ public class CityService implements ServiceInterface<City> {
                 if (!nameValidator.validate(value)) {
                     throw new ServiceException("value " + value + " has invalid value.");
                 }
+                value = value.toLowerCase();
                 city = dao.read(value);
             }
         } catch (DaoException e) {
@@ -61,7 +62,7 @@ public class CityService implements ServiceInterface<City> {
         try {
             City copy = validate(city);
             result = dao.update(copy);
-        } catch (DaoException | CloneNotSupportedException e) {
+        } catch (DaoException e) {
             throw new ServiceException(e);
         }
         return result;
@@ -78,8 +79,8 @@ public class CityService implements ServiceInterface<City> {
         return city;
     }
 
-    private City validate(City city) throws ServiceException, CloneNotSupportedException {
-        String name = city.getName().trim();
+    private City validate(City city) throws ServiceException {
+        String name = city.getName().toLowerCase().trim();
         if (!nameValidator.validate(name)) {
             throw new ServiceException("name " + name + " has invalid value.");
         }
@@ -87,9 +88,8 @@ public class CityService implements ServiceInterface<City> {
         if (!informationValidator.validate(information)) {
             throw new ServiceException("information " + information.substring(1, 20) + " has invalid value.");
         }
-        City result = city.clone();
-        result.setName(name);
-        result.setInformation(information);
+        long id = city.getId();
+        City result = new City(id, name, information);
         return result;
     }
 }

@@ -9,7 +9,7 @@ public interface ControllerInterface<T> {
 
     ResponseEntity<T> create(T t);
 
-    ResponseEntity<City> read(String value);
+    ResponseEntity<City> read(long id);
 
     ResponseEntity<T> update(T t, long id);
 

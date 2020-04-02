@@ -16,6 +16,12 @@ public class City implements Cloneable {
     public City() {
     }
 
+    public City(long id, String name, String information) {
+        this.id = id;
+        this.name = name;
+        this.information = information;
+    }
+
     @Override
     public City clone() throws CloneNotSupportedException {
         return (City) super.clone();
